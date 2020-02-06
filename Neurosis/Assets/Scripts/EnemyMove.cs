@@ -6,15 +6,18 @@ public class EnemyMove : MonoBehaviour
 {
     
 	Rigidbody2D rb;
+	Animator anim;
 	GameObject target;
 	float moveSpeed;
 	Vector3 directionToTarget;
-	public GameObject explosion;
+	bool facingRight = true;
+	public int health;
 
 	// Use this for initialization
 	void Start () {
-		target = GameObject.Find ("Player");
 		rb = GetComponent<Rigidbody2D> ();
+		anim = GetComponent<Animator> ();
+		target = GameObject.Find ("Player");
 		moveSpeed = Random.Range (1f, 3f);
 	}
 	
@@ -23,17 +26,14 @@ public class EnemyMove : MonoBehaviour
 		MoveEnemy ();
 	}
 
-	void OnTriggerEnter2D (Collider2D col)
+	private void OnTriggerEnter2D(Collider2D col)
 	{
-		switch (col.gameObject.tag) {
-
-		case "Player":
+		if(col.CompareTag("Player") == true){
+		//	anim.Play("Player_Death"); //doesnt play
+			Destroy(col.gameObject);
 			EnemySpawn.spawnAllowed = false;
-			Instantiate (explosion, col.gameObject.transform.position, Quaternion.identity);
-			Destroy (col.gameObject);
 			target = null;
-			break;
-
+//			gameOver();
 		}
 	}
 
@@ -41,11 +41,28 @@ public class EnemyMove : MonoBehaviour
 	{
 		if (target != null) {
 			directionToTarget = (target.transform.position - transform.position).normalized;
-			rb.velocity = new Vector2 (directionToTarget.x * moveSpeed,
-										directionToTarget.y * moveSpeed);
+			rb.velocity = new Vector2 (directionToTarget.x * moveSpeed, directionToTarget.y * moveSpeed);
 		}
 		else
 			rb.velocity = Vector3.zero;
+	
+		if(gameObject.transform.position.x > target.transform.position.x && facingRight){
+			Vector3 newScale = gameObject.transform.localScale;
+			newScale.x *= -1;
+			gameObject.transform.localScale = newScale;
+			facingRight = !facingRight;
+			
+		}else if(gameObject.transform.position.x < target.transform.position.x && !facingRight){
+			Vector3 newScale = gameObject.transform.localScale;
+			newScale.x *= -1;
+			gameObject.transform.localScale = newScale;
+			facingRight = !facingRight;
+		}
+	}
+			
+		public void EnemyDeath()
+	{
+		anim.Play("Enemy1_Damage"); //anim not playing
+		Destroy(this.gameObject);
 	}
 }
-
