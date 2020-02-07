@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    public int health;
+    public int playerHealth;
     public int numOfHearts;
     public Image[] hearts;
     public Sprite fullHeart;
@@ -14,13 +14,13 @@ public class Health : MonoBehaviour
 
     void Update(){
         
-        if(health > numOfHearts){
-            health = numOfHearts;
+        if(playerHealth > numOfHearts){
+            playerHealth = numOfHearts;
         }
 
         for (int i = 0; i < hearts.Length; i++){
             
-            if(i < health){
+            if(i < playerHealth){
                 hearts[i].sprite = fullHeart;
             } else {
                 hearts[i].sprite = emptyHeart;

@@ -11,7 +11,10 @@ public class EnemyMove : MonoBehaviour
 	float moveSpeed;
 	Vector3 directionToTarget;
 	bool facingRight = true;
+	public static bool isAttacking = false;
 	public int health;
+	public int playerHealth = 3;
+
 
 	// Use this for initialization
 	void Start () {
@@ -26,32 +29,54 @@ public class EnemyMove : MonoBehaviour
 		MoveEnemy ();
 
 		if(health <= 0){
+		//	anim.Play("Enemy1_Death", 5); prob needs coroutine
 			Destroy(gameObject);
 		}
-	}
 
-	private void OnTriggerEnter2D(Collider2D col)
-	{
+		if(isAttacking){
+			anim.SetBool ("isAttacking", true);
+		} else {
+			anim.SetBool ("isAttacking", false);
+		}
+	}
+	
+	
+	void OnTriggerEnter2D(Collider2D col){
+	
 		if(col.CompareTag("Player") == true){
-		//	anim.Play("Player_Death"); //doesnt play
+			isAttacking = true;
+			anim.Play("Player_Damage"); //doesnt play
+			playerHealth --;
+		}
+
+		if(playerHealth <= 0){
 			Destroy(col.gameObject);
 			EnemySpawn.spawnAllowed = false;
 			target = null;
 //			gameOver();
-		}
+	}
 	}
 
-	void MoveEnemy ()
-	{
+	void OnTriggerExit2D(Collider2D col){
+		if(col.CompareTag("Player") == true){
+			isAttacking = false;
+	}
+	}
+
+	void MoveEnemy (){
 		if (target == null) {
-			//enemy idle anim
+			anim.Play("Enemy1_Idle"); //enemy idle anim
 			rb.velocity = Vector3.zero;
 			return;
-	
 		}
-		else
+		else if(isAttacking){
+			rb.velocity = Vector3.zero;
+		}
+
+		else if(!isAttacking){
 			directionToTarget = (target.transform.position - transform.position).normalized;
 			rb.velocity = new Vector2 (directionToTarget.x * moveSpeed, directionToTarget.y * moveSpeed);
+		}
 
 		if(gameObject.transform.position.x > target.transform.position.x && facingRight){
 			Vector3 newScale = gameObject.transform.localScale;
@@ -66,11 +91,11 @@ public class EnemyMove : MonoBehaviour
 			facingRight = !facingRight;
 		}
 	}
-			
+	
 		public void TakeDamage(int damage){
 			//HURT SOUND
 		health -= damage;
-		 Debug.Log("his health" + health);
-		// anim.Play("Enemy1_Damage"); //anim not playing
+		 Debug.Log("enemy health" + health);
 	}
 }
+	
