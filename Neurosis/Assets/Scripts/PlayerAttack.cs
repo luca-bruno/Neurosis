@@ -8,7 +8,7 @@ public class PlayerAttack : MonoBehaviour
     public float startTimeBetweenAttack;
 
     public Transform attackPos;
-    public LayerMask whatIsEnemies;
+    public LayerMask whatIsEnemies; //ignores objects on layers other than Enemy
     public float attackRange;
     public int damage;
     
@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
          if(Input.GetKeyDown("q")){
             Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
             for (int i = 0; i < enemiesToDamage.Length; i++){
-                enemiesToDamage[i].GetComponent<EnemyMove>().EnemyDeath();
+                enemiesToDamage[i].GetComponent<EnemyMove>().TakeDamage(damage);
             }
          }
 
@@ -33,6 +33,6 @@ public class PlayerAttack : MonoBehaviour
 
     void OnDrawGizmosSelected(){
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPos.position, attackRange);  
+        Gizmos.DrawWireSphere(attackPos.position, attackRange);
         }
 }

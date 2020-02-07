@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class PlayerMove : MonoBehaviour
 	private Animator anim;
 	public float speed;
 	public float jumpForce;
-	private bool facingRight;  // For determining which way the player is currently facing.
 	private bool isGrounded;
 	private bool isAttacking = false;
 	public Transform groundCheck;
@@ -27,11 +27,13 @@ public class PlayerMove : MonoBehaviour
 
 			anim.Play("Player_Attack1");
 			
-			Invoke("ResetAttack", 0.7f);
+			StartCoroutine(DoAttack());
 		}
 	}
 
-		void ResetAttack(){
+		IEnumerator DoAttack()
+		{
+			yield return new WaitForSeconds(.7f);
 			isAttacking = false;
 		}
 
@@ -50,7 +52,6 @@ public class PlayerMove : MonoBehaviour
 				anim.Play("Player_Run");
 			}
 		
-			facingRight = false;
 			transform.localScale = new Vector3(-4, 4, 4);
 		} else if (Input.GetKey("right") || (Input.GetKey("d"))){ //if moves right
 			rb.velocity = new Vector2(speed, rb.velocity.y);
@@ -59,7 +60,6 @@ public class PlayerMove : MonoBehaviour
 			anim.Play("Player_Run");
 			}
 		
-			facingRight = true;
 			transform.localScale = new Vector3(4, 4, 4);
 		}
 		else if (isGrounded == true) {
