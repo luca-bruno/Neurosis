@@ -13,7 +13,6 @@ public class EnemyMove : MonoBehaviour
 	bool facingRight = true;
 	public static bool isAttacking = false;
 	public int health;
-	public int playerHealth = 3;
 
 
 	// Use this for initialization
@@ -29,8 +28,9 @@ public class EnemyMove : MonoBehaviour
 		MoveEnemy ();
 
 		if(health <= 0){
-		//	anim.Play("Enemy1_Death", 5); prob needs coroutine
-			Destroy(gameObject);
+			anim.SetTrigger("Death");
+			rb.velocity = new Vector2(0, 0);
+			Destroy(gameObject, 2);
 		}
 
 		if(isAttacking){
@@ -38,23 +38,6 @@ public class EnemyMove : MonoBehaviour
 		} else {
 			anim.SetBool ("isAttacking", false);
 		}
-	}
-	
-	
-	void OnTriggerEnter2D(Collider2D col){
-	
-		if(col.CompareTag("Player") == true){
-			isAttacking = true;
-			anim.Play("Player_Damage"); //doesnt play
-			playerHealth --;
-		}
-
-		if(playerHealth <= 0){
-			Destroy(col.gameObject);
-			EnemySpawn.spawnAllowed = false;
-			target = null;
-//			gameOver();
-	}
 	}
 
 	void OnTriggerExit2D(Collider2D col){
@@ -95,7 +78,6 @@ public class EnemyMove : MonoBehaviour
 		public void TakeDamage(int damage){
 			//HURT SOUND
 		health -= damage;
-		 Debug.Log("enemy health" + health);
 	}
 }
 	

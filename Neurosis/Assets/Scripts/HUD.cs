@@ -7,10 +7,10 @@ public class HUD : MonoBehaviour
 {
     public Sprite[] HeartSprites;
     [SerializeField] public Image HeartUI;
-    private EnemyMove player;
+    private PlayerMove player;
 
     void Start(){
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<EnemyMove>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMove>();
     }
 
     void Update(){

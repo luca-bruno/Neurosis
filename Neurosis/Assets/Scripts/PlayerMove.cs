@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviour
 	private bool isAttacking = false;
 	public Transform groundCheck;
 	public LayerMask whatisGround;
+	public int playerHealth = 3;
 
     void Start(){
 		rb = GetComponent<Rigidbody2D>();
@@ -72,5 +73,23 @@ public class PlayerMove : MonoBehaviour
 			anim.Play("Player_Jump");
 			rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 		}
+	}
+
+		void OnTriggerEnter2D(Collider2D col){
+	
+		if(col.CompareTag("Enemy") == true){
+			isAttacking = true;
+			anim.SetTrigger("isDamaged");
+			playerHealth --;
+		}
+
+		if(playerHealth <= 0){
+			anim.SetTrigger("Death");
+			rb.velocity = new Vector2(0, 0);
+			Destroy(this.gameObject, 2);
+			
+			EnemySpawn.spawnAllowed = false;
+//			gameOver();
+	}
 	}
 }
