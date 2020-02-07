@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerMove : MonoBehaviour
 {
 	private Rigidbody2D rb;
 	private SpriteRenderer spr;
 	private Animator anim;
+	public AudioSource aud1;
 	public float speed;
 	public float jumpForce;
 	private bool isGrounded;
@@ -19,7 +21,7 @@ public class PlayerMove : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		spr = GetComponent<SpriteRenderer>();
 		anim = GetComponent<Animator>();
-		
+		aud1 = GetComponent<AudioSource>();
 	}
 
 	void Update(){
@@ -81,6 +83,7 @@ public class PlayerMove : MonoBehaviour
 			isAttacking = true;
 			anim.SetTrigger("isDamaged");
 			playerHealth --;
+			aud1.Play ();
 		}
 
 		if(playerHealth <= 0){
@@ -89,7 +92,7 @@ public class PlayerMove : MonoBehaviour
 			Destroy(this.gameObject, 2);
 			
 			EnemySpawn.spawnAllowed = false;
-//			gameOver();
+			SceneManager.LoadScene("GameOver");
 	}
 	}
 }
